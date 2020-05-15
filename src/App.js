@@ -1,25 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Switch, Route} from 'react-router-dom';
+//import logo from './logo.svg';
+//import './App.css';
+import Header from './components/header';
+import Footer from './components/footer';
+import Main from './components/main';
+
+import Help from './components/help';
+
+import SessionState from "./context/session/sessionstate.js";
+import UserState from "./context/user/userstate.js";
+import DepartmentState from './states/department';
+import CategoryState from "./states/category";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <SessionState>
+        <UserState>
+          <DepartmentState>
+            <CategoryState>
+              <Header></Header>
+              <Switch>
+                <Route exact path="/" component={Main} />
+                <Route exact path="/department/:depid" component={Main} />
+                <Route exact path="/category/:catid" component={Main} />
+                <Route exact path="/product/:prodid" component={Main} />
+                <Route exact path="/help" component={Help} />
+              </Switch>
+            </CategoryState>
+          </DepartmentState>
+        </UserState>
+      </SessionState>
+      <Footer></Footer>
+    </>
   );
 }
 

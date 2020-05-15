@@ -1,0 +1,19 @@
+.header__sign__span li span {
+    margin-right: 2px;
+}
+
+.nav__item__dropdown div a i {
+    margin-right: 5px;
+    color: green;
+}
+
+.nav__item__dropdown div a:hover {
+    background-color: green;
+    color: white !important;
+}
+.form__search input {
+    width: 500px;
+}
+.form__search i {
+    color: white;
+}
