@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
 import { DepartmentContext } from "../../context";
-import Api from "../../lib/helper/api"
+import { fetchData, methodNum } from '../../utils/service.js';
 
 
 const DepartmentState = (props) => {
@@ -17,21 +16,10 @@ const DepartmentState = (props) => {
     setDepID(_id);
   }
 
-    const getAll = async () => {
-        await Api.get(url)
-          .then(function (response) {
-            if (!response.ok) {
-              throw Error(response.statusText);
-            }
-            return response.json();
-          })
-          .then(function (response) {
-            setDeparments(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-        });
-    }
+  const getAll = async () => {
+    var resp = await fetchData(url, methodNum.GET);
+    setDeparments(resp);    
+  }
 
     return (
       <DepartmentContext.Provider

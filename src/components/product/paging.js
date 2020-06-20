@@ -21,28 +21,15 @@ const Paging = (props) => {
         e.preventDefault();
     } 
 return (
-    <nav aria-label="Page navigation example">
-        <ul className="pagination">
-            <li className="page-item">
-                <a className="page-link" href="#" aria-label="Previous" onClick={handlePrevious}>
-                    <span aria-hidden="true">&laquo;</span>
-                    <span className="sr-only">Previous</span>
-                </a>
-            </li>
-            {
-                props.pages.map((page, i) =>
-                (
-                        <li className="page-item" key={i}><a className="page-link" href="#" key={i} id={page + 1} onClick={handlePage}>{page + 1}</a></li>
-                ))
-            }
-            <li className="page-item">
-                <a className="page-link" href="#" aria-label="Next" onClick={handleNext}>
-                    <span aria-hidden="true">&raquo;</span>
-                    <span className="sr-only">Next</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+    <div className="col-12 pagination1">
+        <a href="#" class="btn"><i class="fa fa-angle-left"></i></a>
+        <a href="#" class="btn active">1</a>
+        <a href="#" class="btn">2</a>
+        <a href="#" class="btn">3</a>
+        <a href="#" class="btn">4</a>
+        <a href="#" class="btn">5</a>
+        <a href="#" class="btn"><i class="fa fa-angle-right"></i></a>
+    </div>
 );
 };
 

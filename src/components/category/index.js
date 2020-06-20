@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { Link } from 'react-router-dom';
-import { useParams } from "react-router-dom";
-import Api from "../../lib/helper/api";
-import './category.css';
-
-
+import { Link, useParams} from 'react-router-dom'
+import { fetchData, methodNum } from '../../utils/service.js';
 
 const Category = () => {
   const [categories, setCategories] = useState([]);
-  const { depid, catid, prodid } = useParams();
+  const { depid, catid } = useParams();
 
   useEffect(() => {
     if (depid !== undefined) {
@@ -22,42 +18,28 @@ const Category = () => {
 
 
   const getAll = async (url) => {
-    await Api.get(url)
-      .then(function (response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then(function (response) {
-        if (depid != undefined)
-        {
-          setCategories(response);
-        }
-        else {
-          setCategories(response.rows);
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
+    var resp = await fetchData(url, methodNum.GET);
+    if (depid !== undefined) {
+      setCategories(resp);
+    } else {
+      setCategories(resp.rows);
+    }
+  }
 
   return (
-    <div class="col-12 col-sm-3">
-      <div class="card bg-light mb-3">
-        <div class="card-header text-white text-uppercase category_header"><i class="fa fa-list"></i> Categories</div>
-        <ul class="list-group category_block">
+    <div className="col-12 col-sm-3">
+      <div className="card bg-light mb-3">
+        <div className="card-header text-white text-uppercase category_header"><i className="fa fa-list"></i> Categories</div>
+        <ul className="list-group category_block">
           {categories.length > 0 &&
             categories.map((_cat, index) => (
-              <li class="list-group-item" key={index}>
+              <li className="list-group-item" key={index}>
                 <Link to={"/category/" + _cat.category_id}>{_cat.name}</Link>
               </li>
             ))}
         </ul>
       </div>
     </div>
-
     );
 }
 export default Category;

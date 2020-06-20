@@ -1,38 +1,31 @@
 const endPoint = "https://backendapi.turing.com/";
-
+  
 const header = (isTokenUse) => {
-   // debugger;
-    let h = new Headers();
-    h.append("Content-Type", "application/json");
-    h.append('Accept','application/json');
-    h.append("Access-Control-Allow-Origin", "*");
-    h.append("Access-Control-Allow-Credentials", true);
-    h.append("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
-    if (isTokenUse) {
-        const token = sessionStorage.getItem('token');
-        h.append("Authorization", `Bearer ${token}`);
+    let header = new Headers();
+    header.append("Content-Type", "application/json");    
+    header.append("Access-Control-Allow-Origin", "*");
+    header.append("Access-Control-Allow-Credentials", true);
+    header.append("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+    
+    if (isTokenUse) {       
+        const token = sessionStorage.getItem('token');        
+        header.append("Authorization", token);
+    }    
+    return header;
+}
+
+  const Api = {    
+    request : async(path, method, data = null, isTokenUse = false) => {
+        const url = `${endPoint}${path}`;
+        const options = {
+            method,
+            headers: await header(isTokenUse)
+        };         
+        if (data) {
+            options.body = JSON.stringify(data);                    
+        }
+       return fetch(new Request(url, options));
     }
-    return h;
-}
-
-const request = (method, path, body, isTokenUser = false) => {
-    const url = `${endPoint}${path}`;
-    const options = {
-        method, 
-        headers: header(isTokenUser)
-    };
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
-
-    return fetch(new Request(url, options));
-}
-
-
-const Api = {
-    get(path, data = null, isTokenUse = false) { return request('GET', path, data, isTokenUse) },
-    post(path, data = {}, isTokenUse = false) { return request('POST', path, data, isTokenUse) },
-    delete(path, data = null, isTokenUse = false) { return request('DELETE', path, data, isTokenUse) }
-}
+  }
 
 export default Api;

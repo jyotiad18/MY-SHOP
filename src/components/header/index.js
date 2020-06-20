@@ -1,37 +1,18 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import './header.css';
-import SignIn from '../user/signin'
-import Register from '../user/register';
-import Department from './department-nav';
-
+import Department from '../department';
 import SessionContext from '../../context/session/sessioncontext';
-import UserContext from '../../context/user/usercontext';
 
-
-function Header() {
-
-  const sessionContext = useContext(SessionContext);
-  const userContext = useContext(UserContext);
-  const [isRegisterShow, setIsRegisterShow] = useState(false);
+const Header = ()  => {
+  const sessionContext = useContext(SessionContext); 
   const [isToggleOn, setIsToggleOn] = useState(false);
-
   const classDropdownMenu = "dropdown-menu" + (isToggleOn ? " show" : "");
-
-  const { handleLogOut, handleLogIn } = sessionContext;
-  const { handleLoginModal } = userContext;
-
-
-  const handleRegister = () => {
-    setIsRegisterShow(true);
-  };
-    
+  const { handleLogOut, totalAmount, totalProduct, isLogin, username } = sessionContext;
+       
   const onToggleClick = (e) => {
     e.preventDefault();
     setIsToggleOn(!isToggleOn);
-  };
-
-  
+  };  
   const handleOnLogout = (e) => {
     e.preventDefault();
     setIsToggleOn(!isToggleOn);
@@ -40,13 +21,13 @@ function Header() {
 
     return (
       <div>
-        <nav className="navbar navbar-expand-sm bg-light navbar-light">
+        <nav className="navbar navbar-expand-sm bg-light navbar-light navbar__top navbar-fixed-top">
           <div className="container-fluid">
             <ul className="navbar-nav header__sign__span">
               <li>
                 <span className="navbar-text">Hi!</span>
               </li>
-              {sessionContext.isLogin ? (
+              {isLogin ? (
                 <li className="nav-item dropdown nav__item__dropdown">
                   <a
                     className="nav-link dropdown-toggle"
@@ -58,7 +39,7 @@ function Header() {
                     aria-expanded="false"
                     onClick={onToggleClick}
                   >
-                    {sessionContext.username}
+                    {username}
                   </a>
                   <div
                     className={classDropdownMenu}
@@ -68,7 +49,7 @@ function Header() {
                       <i className="fa fa-shopping-bag" aria-hidden="true" />
                       Mybag
                     </a>
-                    <a className="dropdown-item" href="/">
+                    <a className="dropdown-item" href="/profile">
                       <i className="fa fa-user-circle-o" aria-hidden="true"></i>
                       Myprofile
                     </a>
@@ -81,54 +62,55 @@ function Header() {
               ) : (
                 <>
                   <li>
-                    <span className="navbar-text" onClick={handleLoginModal}>
+                    <Link to="/login" className="navbar-text navbar__top__link">
                       SignIn
-                    </span>
-                    {userContext.loginModal ? (
-                      <SignIn
-                        showModel={userContext.loginModal}
-                        handleLoginModal={handleLoginModal}
-                        handleLogIn={handleLogIn}
-                      />
-                    ) : null}
+                    </Link>
                   </li>
                   <li>
-                    <span className="navbar-text">or</span>
+                    <span className="navbar-text navbar__top__link"> or </span>
                   </li>
                   <li>
-                    <span className="navbar-text" onClick={handleRegister}>
-                      Register
-                    </span>
-                    {isRegisterShow ? (
-                      <Register showModel={isRegisterShow} />
-                    ) : null}
+                    <Link
+                      to="/register"
+                      className="navbar-text navbar__top__link"
+                    >
+                      SignUp
+                    </Link>
                   </li>
                 </>
               )}
             </ul>
             <ul className="navbar-nav navbar-center">
               <li className="nav-item">
-                <Link className="nav-link" to="/dailydeals">Daily Deals</Link>
+                <Link className="nav-link nav-text" to="/dailydeals">
+                  Daily Deals
+                </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/sell">Sell</Link>
+                <Link className="nav-link" to="/sell">
+                  Sell
+                </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/help">Help & Contact</Link>
+                <Link className="nav-link" to="/help">
+                  Help & Contact
+                </Link>
               </li>
             </ul>
             <ul className="navbar-nav navbar-right">
               <li className="nav-item">
-                {" "}
-                <a className="nav-text">
-                  {" "}
-                  <i className="fa fa-shopping-bag" aria-hidden="true" />
-                  Your Bag
+                <a href="/product/cartlist" className="nav-text">
+                  <span className="fa-stack fa-1x">
+                    <i className="fa fa-shopping-cart fa-stack-2x"></i>
+                    {totalProduct > 0 ? 
+                      <span className="badge">{totalProduct}</span>
+                    :""
+                    }
+                  </span>
                 </a>
               </li>
               <li className="nav-item">
-                {" "}
-                <a className="nav-text">0.00</a>
+                <a className="nav-text">$ {totalAmount}</a>
               </li>
             </ul>
           </div>
@@ -142,9 +124,12 @@ function Header() {
             <span className="navbar-toggler-icon"></span>
           </button>
         </nav>
-        <nav className="navbar navbar-expand-sm bg-dark navbar-dark">
+
+        <nav className="navbar navbar-expand-sm bg-dark navbar-dark navbar-fixed-top">
           <div className="container-fluid">
-            <Link className="navbar-brand" to="/">Online-Shopping</Link>
+            <Link className="navbar-brand" to="/">
+              Online-Shopping
+            </Link>
             <Department></Department>
             <form className="form-inline navbar-right form__search">
               <input

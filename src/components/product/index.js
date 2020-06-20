@@ -1,20 +1,18 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, Route, useParams } from "react-router-dom";
-import './product.css';
+import ShoppingCart from '../shoppingcart';
 import ProductList from "./list.js";
 import ProductDetail from "./detail.js";
-import Paging from './paging.js';
-import Api from '../../lib/helper/api';
+import { fetchData, methodNum } from '../../utils/service.js';
 
 
-const Product = (props) => {
-  //const productContext = useContext(ProductContext);
-  //const { products, totalProduct, pages } = productContext;
-  const [products, setProducts] = useState([]);
-  //const [totalProduct, setTotalProduct] = useState(0);
+const Product = (props) => {  
+  const [products, setProducts] = useState([]);  
   const [pages, setPages] = useState(0);
   const { depid, catid, prodid} = useParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const [colors, setColors] = useState([]);
+  const [sizes, setSizes] = useState([]);
   
   useEffect(() => {
     if (depid !== undefined) {
@@ -24,7 +22,7 @@ const Product = (props) => {
     {
       getAll(`products/inCategory/${catid}`);
     }
-    else if(depid === undefined && catid === undefined && prodid == undefined) {
+    else if(depid === undefined && catid === undefined && prodid === undefined) {
       getAll(`products`);
     }
   }, [depid, catid, prodid]);
@@ -42,41 +40,36 @@ const Product = (props) => {
   }
 
   const getAll = async (url) => {
-    await Api.get(url)
-      .then(function (response) {
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then(function (resp) {
-        const total = resp.count;
-       // setTotalProduct(total);
-        setProducts(resp.rows);
-        calculatePage(total);
-      })
-      .catch(function (error) {
-        console.log(error);
+    var resp = await fetchData(url, methodNum.GET);
+    var productData = [];
+    await resp.rows.forEach(async(el, i) => {
+      const data = await getProductAttributes(el.product_id);
+      const colors = data.filter((r) => { return r.attribute_name === "Color" });
+      const sizes = data.filter((r) => { return r.attribute_name === "Size" });
+      productData.push({
+        ...el,
+        sizes: sizes,
+        colors: colors
       });
-  };
+      if (i === (resp.rows.length - 1)) {
+        setProducts(productData);
+      }
+    });
+  }
+  
+  const getProductAttributes = async (_id) => {
+    return await fetchData(`attributes/inProduct/${_id}`, methodNum.GET);
+  }
 
   return (
     <div className="col-12 col-sm-9">
       <Switch>
         <div className="col-12">
-          <Route exact path="/" render={(props) => <ProductList products={products} {...props} />} />
-          <Route exact path="/department/:depid" render={(props) => <ProductList products={products} {...props} />} />
-          <Route exact path="/category/:catid" render={(props) => <ProductList products={products} {...props} />} />
-          <Route exact path="/product/:prodid" component={ProductDetail} />
+          <Route exact path={["/", "/department/:depid", "/category/:catid"]} render={(props) => <ProductList products={products} {...props} />} />         
+          <Route exact path="/product/:prodid" component={ ProductDetail } />
+          <Route exact path="/product/cartlist" component={ ShoppingCart }></Route>
         </div>
-      </Switch>
-      {/*<div className="col-12 product__paging">
-        {pages.length > 0 ? <Paging pages={pages}></Paging> : ""}
-      </div>
-      <div className="col-12">
-        <ProductList products={products}></ProductList>
-      </div>
-  */}
+      </Switch>      
     </div>
   );
 };

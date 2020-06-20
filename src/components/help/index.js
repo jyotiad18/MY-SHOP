@@ -1,7 +1,4 @@
 import React from "react";
-
-import ProductState from "../../states/product";
-
 const Help = () => {
     return (
         <div>

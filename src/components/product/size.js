@@ -1,14 +1,17 @@
 import React from "react";
 
 const Size = (props) => {
+    const onHandleClick = (e) => {
+        props.handleSize(e);
+    }
     return (
-        <div className='col col-12'>
-            {
-                props.size.map((s, i) =>
-                    (<div className="product__attributes__size" key={i} > { s.attribute_value}</div>)
-                )
-            }
-        </div>
+        <>
+        {
+             props.sizes.length > 0 && props.sizes.map((s, i) =>
+                 (<span className="product__attributes__size" key={i} onClick={onHandleClick} id={s.attribute_value}> {s.attribute_value}</span>)
+            )
+        }
+        </>
     );
 }
 
