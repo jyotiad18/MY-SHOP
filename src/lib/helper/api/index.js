@@ -1,4 +1,4 @@
-const endPoint = "https://backendapi.turing.com/";
+const endPoint = "https://xxx.com/";
   
 const header = (isTokenUse) => {
     let header = new Headers();
